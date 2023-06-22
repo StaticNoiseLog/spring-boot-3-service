@@ -63,7 +63,7 @@ Database
 
 Postgres Docker Image
 ---------------------
-This app expects a Postgres DB running on port 5432 with an empty database called customerdb. You can provide it with
+This app expects a Postgres DB running on port 5432 with an empty database called `customerdb`. You can provide it with
 Docker:
 
     docker pull postgres
@@ -72,13 +72,13 @@ Docker:
 JDBC URL, database user and password are configured
 in [application.properties](src/main/resources/application.properties).
 
-The DB driver has to be on the path, but there is no need to configure it (something
-like `spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver`), Spring Boot will figure it out.
+The DB driver has to be on the path, but there is no need to configure it (something like
+`spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver`), Spring Boot will figure it out.
 
 Database Tables
 ----------------
-The database tables are Defined in [schema.sql](src/main/resources/schema.sql) and filled with data
-from [data.sql](src/main/resources/data.sql).
+The database tables are defined in [schema.sql](src/main/resources/schema.sql) and filled with data from
+[data.sql](src/main/resources/data.sql).
 
 In order for the application to initialize a DB, we have to set `spring.sql.init.mode`
 in [application.properties](src/main/resources/application.properties).
@@ -94,8 +94,8 @@ Querying Application Data
 Testing
 =======
 
-Built-In Support for Testcontainers and Docker Compose
-------------------------------------------------------
+Spring Boot 3 Supports Testcontainers and Docker Compose
+--------------------------------------------------------
 Demonstrated
 in [TestServiceApplication](src/test/java/com/staticnoiselog/springboot3service/TestServiceApplication.java).
 
