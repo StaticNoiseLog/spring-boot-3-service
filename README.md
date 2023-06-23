@@ -35,8 +35,6 @@ Settings
 Dependencies
 ------------
 
-- GraalVM Native Support [Developer Tools]  
-  Support for compiling Spring applications to native executables using the GraalVM native-image compiler.
 - PostgreSQL Driver [SQL]  
   A JDBC and R2DBC driver that allows Java programs to connect to a PostgreSQL database using standard, database
   independent Java code.
@@ -52,6 +50,9 @@ Dependencies
 - Spring Boot Actuator [Ops]  
   Supports built in (or custom) endpoints that let you monitor and manage your application - such as application health,
   metrics, sessions, etc.
+- GraalVM Native Support [Developer Tools]  
+  Support for compiling Spring applications to native executables using the GraalVM native-image compiler.
+
 
 Efficiency and Scalability
 ==========================
