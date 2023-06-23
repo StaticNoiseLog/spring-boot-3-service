@@ -53,10 +53,22 @@ Dependencies
   Supports built in (or custom) endpoints that let you monitor and manage your application - such as application health,
   metrics, sessions, etc.
 
-GraalVM
-=======
+Efficiency and Scalability
+==========================
 
-    sdk install java 22.2.r17-grl
+Java is already very efficient compared with other
+languages: <https://thenewstack.io/which-programming-languages-use-the-least-electricity/>
+
+GraalVM
+-------
+GraalVM allows you to turn a Java program into native code if you supply (a lot of) configuration. Spring Boot 3 helps
+to create this configuration which needs to be fed into the GraalVM compiler.
+
+For this to work you have to install GraalVM.
+
+    ./gradlew nativeCompile        # Compiles a native image for the main binary
+    ./gradlew nativeTestCompile    # Compiles a native image for the test binary
+
 
 Database
 ========
@@ -82,14 +94,37 @@ The database tables are defined in [schema.sql](src/main/resources/schema.sql) a
 
 In order for the application to initialize a DB, we have to set `spring.sql.init.mode`
 in [application.properties](src/main/resources/application.properties).
+Note that setting this property to `always` means that schema.sql and data.sql are executed each time the application is
+started.
 
-Usage
-=====
+
+Execution
+=========
+
+Running the App in IntelliJ
+---------------------------
+
+- Right-click on SpringBoot3ServiceApplication
+- Run ... or Debug ...
 
 Querying Application Data
 -------------------------
 <http://localhost:8080/customers>
 
+<http://localhost:8080/customers/Olga> [byName]
+
+Actuator
+--------
+<http://localhost:8080/actuator>
+
+Containerization
+-----------------
+You don't write a Dockerfile yourself. Instead you use **Cloud Native Buildpacks**. You simply use a Gradle or Maven
+task to build an OCI (Open Container Initiative) image of the application:
+
+    ./gradlew bootBuildImage # Builds an OCI image of the application using the output of the bootJar task
+
+    ./mvn spring-boot:build-image
 
 Testing
 =======
@@ -99,3 +134,32 @@ Spring Boot 3 Supports Testcontainers and Docker Compose
 Demonstrated
 in [TestServiceApplication](src/test/java/com/staticnoiselog/springboot3service/TestServiceApplication.java).
 
+
+Observability
+=============
+
+Done with the `Observation` API. You need the `ObservationRegistry` and then you can do something like this:
+
+        return Observation
+                .createNotStarted("by-name", this.registry)
+                .observe(() -> repository.findByName(name));
+
+You can query this metrics data using the designation you gave it ("
+by-name"): <http://localhost:8080/actuator/metrics/by-name>
+
+If you enable *distributed tracing* you could call another service without losing track.
+
+Before Spring Boot 3, tracing was done with Sleuth, which is part of Spring Cloud.
+With Spring Boot 3 micrometer now does both, **metrics** (as before) and **tracing**.
+
+Therefore, the stack is now more logical with tracing at the bottom of the dependencies instead of at the top:
+
+- Spring Cloud (no more need for Sleuth)
+- Spring Boot 3
+- Spring 6
+- Micrometer (metrics and tracing)
+
+Jakarta
+=======
+
+Note that with Spring Boot 3 and Spring 6 the switch to `jakarta` package has been made.

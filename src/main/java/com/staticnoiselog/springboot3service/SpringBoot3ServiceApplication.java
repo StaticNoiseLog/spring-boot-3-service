@@ -52,11 +52,16 @@ class CustomerHttpController {
     }
 }
 
+/**
+ * Handles all IllegalStateException objects thrown by the app. Assures a consistent representation of errors by using
+ * {@link ProblemDetail}, which is an implementation of RFC 7807. This must be enabled in <code>application.properties</code>
+ * with the attribute <code>spring.mvc.problemdetails.enabled=true</code>.
+ */
 @ControllerAdvice
 class ErrorHandlingControllerAdvice {
     @ExceptionHandler
     ProblemDetail handle(IllegalStateException ise, HttpServletRequest request) {
-        request.getHeaderNames().asIterator().forEachRemaining(System.out::println);
+        request.getHeaderNames().asIterator().forEachRemaining(System.out::println); // you have access to the HttpServletRequest
         var pd = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST.value());
         pd.setDetail(ise.getMessage());
         return pd;
