@@ -3,6 +3,8 @@ package com.staticnoiselog.springboot3service;
 import io.micrometer.observation.Observation;
 import io.micrometer.observation.ObservationRegistry;
 import jakarta.servlet.http.HttpServletRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -17,13 +19,15 @@ import org.springframework.web.bind.annotation.*;
 
 @SpringBootApplication
 public class SpringBoot3ServiceApplication {
+    private static final Logger logger = LoggerFactory.getLogger(SpringBoot3ServiceApplication.class);
+
     public static void main(String[] args) {
         SpringApplication.run(SpringBoot3ServiceApplication.class, args);
     }
 
     @Bean
     ApplicationRunner applicationRunner(CustomerRepository repository) {
-        return args -> repository.findAll().forEach(System.out::println); // print out content of DB on startup
+        return args -> repository.findAll().forEach(customer -> logger.info(customer.toString())); // print out content of DB on startup
     }
 }
 
@@ -59,9 +63,11 @@ class CustomerHttpController {
  */
 @ControllerAdvice
 class ErrorHandlingControllerAdvice {
+    private static final Logger logger = LoggerFactory.getLogger(ErrorHandlingControllerAdvice.class);
+
     @ExceptionHandler
     ProblemDetail handle(IllegalStateException ise, HttpServletRequest request) {
-        request.getHeaderNames().asIterator().forEachRemaining(System.out::println); // you have access to the HttpServletRequest
+        request.getHeaderNames().asIterator().forEachRemaining(logger::info); // you have access to the HttpServletRequest
         var pd = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST.value());
         pd.setDetail(ise.getMessage());
         return pd;
