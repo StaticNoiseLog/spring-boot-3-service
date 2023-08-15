@@ -18,11 +18,11 @@ import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
 @SpringBootApplication
-public class SpringBoot3ServiceApplication {
-    private static final Logger logger = LoggerFactory.getLogger(SpringBoot3ServiceApplication.class);
+public class DemoApplication {
+    private static final Logger logger = LoggerFactory.getLogger(DemoApplication.class);
 
     public static void main(String[] args) {
-        SpringApplication.run(SpringBoot3ServiceApplication.class, args);
+        SpringApplication.run(DemoApplication.class, args);
     }
 
     @Bean
@@ -42,6 +42,12 @@ class CustomerHttpController {
         this.registry = registry;
     }
 
+    /**
+     * Read customer by name. The name must start with a capital letter.
+     *
+     * @param name String
+     * @return {@literal Iterable<Customer>}
+     */
     @GetMapping("/customers/{name}")
     Iterable<Customer> byName(@PathVariable String name) {
         Assert.state(Character.isUpperCase(name.charAt(0)), "the name must start with an uppercase letter");
@@ -50,6 +56,11 @@ class CustomerHttpController {
                 .observe(() -> repository.findByName(name));
     }
 
+    /**
+     * Read all customers.
+     *
+     * @return {@literal Iterable<Customer>}
+     */
     @GetMapping("/customers")
     Iterable<Customer> customers() {
         return this.repository.findAll();
